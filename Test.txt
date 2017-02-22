@@ -1,0 +1,177 @@
+Private Sub CommandButton1_Click()
+Dim rRange As Range
+Dim lCount As Long   'Counter
+
+On Error GoTo ErrorHandle
+
+'Cell B1 is selected for input
+Set rRange = Range("B1")
+
+'We loop through the list, and selected items
+'are inserted into B1 and downwards.
+With ListBox1
+   For lCount = 0 To .ListCount - 1
+      If .Selected(lCount) = True Then
+         rRange.Offset(lCount, 0).Value = .List(lCount)
+      End If
+   Next
+End With
+
+BeforeExit:
+Set rRange = Nothing
+Unload UserForm1
+
+Exit Sub
+ErrorHandle:
+MsgBox Err.Description
+Resume BeforeExit
+End Sub
+
+
+Private Sub ComboBox1_Change()
+Dim i As Integer
+
+ ComboBox3.Clear
+ ComboBox2.Clear
+ ComboBox4.Clear
+i = ComboBox1.Value
+Dim hometeam, awayteam, matchstatus As String
+hometeam = Worksheets("Schedule").Cells(i + 1, 2)
+awayteam = Worksheets("Schedule").Cells(i + 1, 3)
+matchstatus = Worksheets("Schedule").Cells(i + 1, 8)
+Validatethematchdate (matchstatus)
+Label4.Caption = hometeam
+Label5.Caption = awayteam
+
+With ComboBox2
+.AddItem hometeam
+.AddItem awayteam
+End With
+
+Dim sh2, sh3 As Worksheet
+
+
+
+    Set sh2 = Worksheets(hometeam)
+   Set sh3 = Worksheets(awayteam)
+  
+
+   ComboBox3.Clear
+   ComboBox4.Clear
+  
+Dim rCell As Range
+
+For Each rCell In sh2.Range("A1:A50")
+If rCell.Value <> "" Then
+    ComboBox3.AddItem rCell.Value
+    ComboBox4.AddItem rCell.Value
+End If
+Next rCell
+
+For Each rCell In sh3.Range("A1:A50")
+If rCell.Value <> "" Then
+    ComboBox3.AddItem rCell.Value
+    ComboBox4.AddItem rCell.Value
+End If
+Next rCell
+
+
+End Sub
+
+
+Private Sub CommandButton2_Click()
+Unload Me
+UserForm1.Show
+UserForm_Initialize
+End Sub
+
+Private Sub Label8_Click()
+
+End Sub
+
+Private Sub UserForm_Initialize()
+UserForm1.BackColor = RGB(255, 204, 204)
+
+Label1.Font.Name = "CALIBRI"
+Label1.Font.Size = 14
+Label1.TextAlign = fmTextAlignCenter
+Label1.BackColor = RGB(255, 204, 204)
+Label1.ForeColor = RGB(102, 102, 204)
+
+
+Label2.Font.Name = "CALIBRI"
+Label2.Font.Size = 14
+Label2.TextAlign = fmTextAlignCenter
+
+Label3.Font.Name = "CALIBRI"
+Label3.Font.Size = 14
+Label3.TextAlign = fmTextAlignCenter
+
+Label4.Font.Name = "CALIBRI"
+Label4.Font.Size = 14
+Label4.TextAlign = fmTextAlignCenter
+
+Label5.Font.Name = "CALIBRI"
+Label5.Font.Size = 14
+Label5.TextAlign = fmTextAlignCenter
+
+Label6.Font.Name = "CALIBRI"
+Label6.Font.Size = 14
+Label6.TextAlign = fmTextAlignCenter
+
+Label7.Font.Name = "CALIBRI"
+Label7.Font.Size = 14
+Label7.TextAlign = fmTextAlignCenter
+
+Label8.Font.Name = "CALIBRI"
+Label8.Font.Size = 14
+Label8.TextAlign = fmTextAlignCenter
+
+Label9.Font.Name = "CALIBRI"
+Label9.Font.Size = 14
+Label9.TextAlign = fmTextAlignCenter
+
+Label10.Font.Name = "CALIBRI"
+Label10.Font.Size = 14
+Label10.TextAlign = fmTextAlignCenter
+
+Dim rRange As Range
+
+On Error GoTo ErrorHandle
+Dim sh1 As Worksheet
+    Set sh1 = Worksheets("Schedule")
+ComboBox1.Clear
+ComboBox1.List = sh1.Range("A2:A" & _
+                                sh1.Range("A" & sh1.Rows.Count).End(xlUp).Row).Value
+Dim sh2 As Worksheet
+    Set sh2 = Worksheets("Prediction Teams")
+ComboBox6.Clear
+ComboBox6.List = sh2.Range("A1:A" & _
+                                sh2.Range("A" & sh2.Rows.Count).End(xlUp).Row).Value
+
+BeforeExit:
+Set rRange = Nothing
+With ComboBox5
+.AddItem "<5"
+.AddItem "5-8"
+.AddItem "8<"
+End With
+Exit Sub
+ErrorHandle:
+MsgBox Err.Descriptions
+Resume BeforeExit
+End Sub
+
+Private Sub Validatethematchdate(ByRef status As String)
+If ((status = "Completed") Or (status = "InComplete")) Then
+MsgBox ("Match is already completed. Please select the right match")
+Unload Me
+UserForm1.Show
+UserForm_Initialize
+
+End If
+End Sub
+
+
+
+
